@@ -1,8 +1,25 @@
-import { Controller } from '@nestjs/common'
+import { Controller, Get, HttpCode, HttpStatus, Param } from '@nestjs/common'
+import { UserRole } from '@prisma/__generated__/enums'
+
+import { Authorization, Authorized } from '@/libs/common/decorators'
 
 import { UserService } from './user.service'
 
 @Controller('users')
 export class UserController {
-	constructor(private readonly userService: UserService) {}
+	public constructor(private readonly userService: UserService) {}
+
+	@Authorization()
+	@Get('profile')
+	@HttpCode(HttpStatus.OK)
+	public async findProfile(@Authorized('id') id: string) {
+		return this.userService.findById(id)
+	}
+
+	@Authorization(UserRole.ADMIN)
+	@Get('id/:id')
+	@HttpCode(HttpStatus.OK)
+	public async findById(@Param('id') id: string) {
+		return this.userService.findById(id)
+	}
 }
