@@ -38,7 +38,7 @@ export class UserService {
 		password: string,
 		displayName: string,
 		picture: string,
-		method: AuthMethod
+		authMethod: AuthMethod
 	) {
 		const user = await this.prismaService.user.create({
 			data: {
@@ -46,7 +46,7 @@ export class UserService {
 				password: password ? await hash(password) : '',
 				displayName,
 				picture,
-				method
+				authMethod
 			},
 			include: {
 				accounts: true

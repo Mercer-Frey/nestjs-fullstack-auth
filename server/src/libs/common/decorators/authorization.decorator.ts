@@ -11,9 +11,6 @@ export function Authorization(...roles: UserRole[]) {
 			UseGuards(AuthGuard, RolesGuard)
 		)
 	}
-	console.log('****************Authorization************************')
-	console.log('roles', roles)
-	console.log('****************Authorization************************')
 
 	return applyDecorators(UseGuards(AuthGuard))
 }
