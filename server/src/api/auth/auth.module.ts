@@ -9,6 +9,7 @@ import { getProvidersConfig, getRecaptchaConfig } from '@/config'
 
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
+import { TwoFactorAuthModule } from './two-factor-auth/two-factor-auth.module'
 
 @Module({
 	controllers: [AuthController],
@@ -25,7 +26,8 @@ import { AuthService } from './auth.service'
 			inject: [ConfigService],
 			useFactory: getProvidersConfig
 		}),
-		forwardRef(() => EmailConfirmModule)
+		forwardRef(() => EmailConfirmModule),
+		TwoFactorAuthModule
 	],
 	exports: [AuthService]
 })

@@ -16,6 +16,7 @@ import type { Request, Response } from 'express'
 import { LoginDto, RegisterDto } from '@/api/auth/dto'
 import { EmailConfirmService } from '@/api/auth/email-confirm/email-confirm.service'
 import { ProviderService } from '@/api/auth/provider/provider.service'
+import { TwoFactorAuthService } from '@/api/auth/two-factor-auth/two-factor-auth.service'
 import { UserService } from '@/api/user/user.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
@@ -27,7 +28,8 @@ export class AuthService {
 		private readonly prismaService: PrismaService,
 		private readonly userService: UserService,
 		private readonly configService: ConfigService,
-		private readonly providerService: ProviderService
+		private readonly providerService: ProviderService,
+		private readonly twoFactorAuthService: TwoFactorAuthService
 	) {}
 
 	public async register(req: Request, dto: RegisterDto) {
@@ -72,6 +74,23 @@ export class AuthService {
 
 			throw new UnauthorizedException(
 				'Email verification failed, please check your mailbox'
+			)
+		}
+
+		if (user.isTwoFactorEnabled) {
+			if (!dto.code) {
+				await this.twoFactorAuthService.sendTwoFactorAuthToken(
+					user.email
+				)
+
+				return {
+					message: 'Check your email you need two factor auth token'
+				}
+			}
+
+			this.twoFactorAuthService.validateTwoFactorToken(
+				user.email,
+				dto.code
 			)
 		}
 

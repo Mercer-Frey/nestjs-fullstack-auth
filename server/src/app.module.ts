@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from '@/api/auth/auth.module'
 import { PasswordRecoveryModule } from '@/api/auth/password-recovery/password-recovery.module'
 import { ProviderModule } from '@/api/auth/provider/provider.module'
+import { TwoFactorAuthModule } from '@/api/auth/two-factor-auth/two-factor-auth.module'
 import { UserModule } from '@/api/user/user.module'
 import { IS_DEV_ENV } from '@/libs/common/utils/is-dev.util'
 import { SmtpModule } from '@/libs/smtp/smtp.module'
@@ -24,7 +25,8 @@ import { EmailConfirmModule } from './api/auth/email-confirm/email-confirm.modul
 		ProviderModule,
 		SmtpModule,
 		EmailConfirmModule,
-		PasswordRecoveryModule
+		PasswordRecoveryModule,
+		TwoFactorAuthModule
 	]
 })
 export class AppModule {}

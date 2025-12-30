@@ -1,11 +1,7 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from '@react-email/components';
-import { Tailwind } from '@react-email/tailwind';
-import React from 'react';
-
-interface ConfirmationTemplateProps {
-	token: string;
-	domain: string;
-}
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from '@react-email/components'
+import { Tailwind } from '@react-email/tailwind'
+import React from 'react'
+import { ConfirmationTemplateProps } from '@/libs/smtp/templates/props/confirmation-template-props.interface'
 
 export function ConfirmationTemplate({ token, domain }: ConfirmationTemplateProps) {
 	const confirmLink = `${domain}/api/auth/new-verification?token=${token}`;

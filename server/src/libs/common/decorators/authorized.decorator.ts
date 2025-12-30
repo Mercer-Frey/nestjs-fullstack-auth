@@ -7,9 +7,6 @@ export const Authorized = createParamDecorator(
 	(data: keyof User, ctx: ExecutionContext) => {
 		const request = ctx.switchToHttp().getRequest<RequestWithUser>()
 		const user = request.user as User
-		console.log('****************Authorized************************')
-		console.log('user', user)
-		console.log('****************Authorized************************')
 
 		return user ? user[data] : user
 	}

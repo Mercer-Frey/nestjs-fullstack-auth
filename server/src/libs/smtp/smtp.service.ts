@@ -6,7 +6,9 @@ import type { SentMessageInfo } from 'nodemailer'
 
 import ConfirmationTemplate from '@/libs/smtp/templates/confirmation.template'
 import { ResetPasswordTemplateProps } from '@/libs/smtp/templates/props/reset-password-template-props.interface'
+import { TwoFactorAuthTemplateProps } from '@/libs/smtp/templates/props/two-factor-auth-template-props.interface'
 import ResetPasswordTemplate from '@/libs/smtp/templates/reset-password.template'
+import TwoFactorAuthTemplate from '@/libs/smtp/templates/two-factor-auth.template'
 
 interface ConfirmationTemplateProps {
 	token: string
@@ -47,6 +49,19 @@ export class SmtpService {
 		)
 
 		await this.sendMail(email, 'Reset password', html)
+	}
+
+	public async sendTwoFactorAuthEmail(
+		email: string,
+		token: string
+	): Promise<void> {
+		const html: string = await render(
+			TwoFactorAuthTemplate({
+				token
+			} as TwoFactorAuthTemplateProps)
+		)
+
+		await this.sendMail(email, 'Confirm your personality', html)
 	}
 
 	private async sendMail(

@@ -1,15 +1,10 @@
 import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from '@react-email/components'
 import { Tailwind } from '@react-email/tailwind'
 import React from 'react'
-
-interface ResetPasswordTemplateProps {
-	token: string;
-	domain: string;
-	// Optional: username?: string;
-}
+import { ResetPasswordTemplateProps } from '@/libs/smtp/templates/props/reset-password-template-props.interface'
 
 export function ResetPasswordTemplate({ token, domain }: ResetPasswordTemplateProps) {
-	const resetLink = `${domain}/api/auth/reset-password?token=${token}`;
+	const resetLink = `${domain}/api/auth/password-recovery/reset/${token}`;
 
 	return (
 		<Html>
