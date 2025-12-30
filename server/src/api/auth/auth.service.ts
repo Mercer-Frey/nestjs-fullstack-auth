@@ -88,7 +88,7 @@ export class AuthService {
 				}
 			}
 
-			this.twoFactorAuthService.validateTwoFactorToken(
+			await this.twoFactorAuthService.validateTwoFactorToken(
 				user.email,
 				dto.code
 			)
