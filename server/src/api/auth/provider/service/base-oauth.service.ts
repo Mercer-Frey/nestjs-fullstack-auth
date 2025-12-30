@@ -74,8 +74,9 @@ export class BaseOAuthService {
 
 		if (!tokensRequest.ok) {
 			const text = await tokensRequest.text()
-			console.error('Google token error:', text)
-			throw new BadRequestException('Token not found')
+			throw new BadRequestException(
+				`Token ${this.options.name} not found`
+			)
 		}
 
 		const tokens = (await tokensRequest.json()) as OAuthTokenResponse

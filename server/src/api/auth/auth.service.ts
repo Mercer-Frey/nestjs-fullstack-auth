@@ -1,5 +1,7 @@
 import {
 	ConflictException,
+	forwardRef,
+	Inject,
 	Injectable,
 	InternalServerErrorException,
 	NotFoundException,
@@ -12,6 +14,7 @@ import { verify } from 'argon2'
 import type { Request, Response } from 'express'
 
 import { LoginDto, RegisterDto } from '@/api/auth/dto'
+import { EmailConfirmService } from '@/api/auth/email-confirm/email-confirm.service'
 import { ProviderService } from '@/api/auth/provider/provider.service'
 import { UserService } from '@/api/user/user.service'
 import { PrismaService } from '@/prisma/prisma.service'
@@ -19,6 +22,8 @@ import { PrismaService } from '@/prisma/prisma.service'
 @Injectable()
 export class AuthService {
 	public constructor(
+		@Inject(forwardRef(() => EmailConfirmService))
+		private readonly emailConfirmService: EmailConfirmService,
 		private readonly prismaService: PrismaService,
 		private readonly userService: UserService,
 		private readonly configService: ConfigService,
@@ -40,7 +45,12 @@ export class AuthService {
 			AuthMethod.CREDENTIALS
 		)
 
-		return await this.saveSession(req, user)
+		await this.emailConfirmService.sendVerificationToken(user)
+
+		return {
+			message:
+				'You have successfully registered, please confirm your email'
+		}
 	}
 
 	public async login(req: Request, dto: LoginDto) {
@@ -55,6 +65,14 @@ export class AuthService {
 
 		if (!isValidPassword) {
 			throw new UnauthorizedException('Wrong credentials')
+		}
+
+		if (!user.isVerified) {
+			await this.emailConfirmService.sendVerificationToken(user)
+
+			throw new UnauthorizedException(
+				'Email verification failed, please check your mailbox'
+			)
 		}
 
 		await this.saveSession(req, user)
@@ -128,7 +146,7 @@ export class AuthService {
 		})
 	}
 
-	private async saveSession(req: Request, user: User) {
+	public async saveSession(req: Request, user: User) {
 		return await new Promise((resolve, reject) => {
 			req.session.userId = user.id
 			req.session.save(err => {
